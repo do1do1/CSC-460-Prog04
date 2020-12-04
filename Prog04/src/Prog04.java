@@ -5,7 +5,6 @@ import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Scanner;
-import java.io.*;
 
 public class Prog04 {
 	public static void main(String[] args) {
