@@ -12,9 +12,9 @@ public class Prog04 {
 		String username = null, password = null;
 		
 		if (args.length == 2) {    // get username/password from cmd line args
-            username = args[0];
+			username = args[0];
             password = args[1];
-        } else {
+		} else {
             System.out.println("\nUsage:  java JDBC <username> <password>\n"
                              + "    where <username> is your Oracle DBMS"
                              + " username,\n    and <password> is your Oracle"
@@ -46,7 +46,7 @@ public class Prog04 {
                            (oracleURL,username,password);
 
 		} catch (SQLException e) {
-
+			
             System.err.println("*** SQLException:  "
                 + "Could not open JDBC connection.");
             System.err.println("\tMessage:   " + e.getMessage());
