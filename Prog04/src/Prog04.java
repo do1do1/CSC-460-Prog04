@@ -1,9 +1,11 @@
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Scanner;
+import java.io.*;
 
 public class Prog04 {
 	public static void main(String[] args) {
@@ -80,11 +82,124 @@ public class Prog04 {
 			} else if(line.equals("b")) {
 				
 			} else if(line.equals("c")) {
+				String phoneNumber="";
+				int memberID=-1;
+				try {
+					// find member
+					System.out.println("Enter a for getting member by phone number or b for getting member by memID");
+					String userInput = input.nextLine().toLowerCase();
+					if(userInput.equals("a")) {
+						System.out.println("Enter phone number");
+						userInput = input.nextLine();
+						phoneNumber = userInput;
+					} else if(userInput.equals("b")) {
+						System.out.println("Enter member ID");
+						userInput = input.nextLine();
+						try {
+							Integer.parseInt(userInput);
+							memberID = Integer.parseInt(userInput);
+						} catch (NumberFormatException e) {
+							System.out.println("Member ID must be numeric");
+							continue;
+						}
+					}
+					query = "SELECT firstName, lastName, birthDate, rewardPts FROM yungbluth.Member WHERE phoneNum = '" + phoneNumber +"' OR memID = " + String.valueOf(memberID);
+					stmt = dbconn.createStatement();
+				    answer = stmt.executeQuery(query);
+				    if (answer != null) {
+				    	
+				        // Get the data about the query result to learn
+				        // the attribute names and use them as column headers
+				        ResultSetMetaData answermetadata = answer.getMetaData();
+				        for (int i = 1; i <= answermetadata.getColumnCount(); i++) {
+				            System.out.print(answermetadata.getColumnName(i) + "\t");
+				        }
+				        System.out.println();
 				
+				        // Use next() to advance cursor through the result
+				        // tuples and print their attribute values
+				        String format = "";
+				        String lastName = "";
+				        while (answer.next()) {
+				        	// formatting the output neatly
+				        	format = String.format("%-16s", answer.getString("firstName"));
+				        	lastName = String.format("%-16s", answer.getString("lastName"));
+				        	System.out.println(format + lastName + answer.getString("birthDate") + "\t" + answer.getInt("rewardPts"));	
+				        }
+				    }
+				    System.out.println();
+				} catch (SQLException e) {
+					// catching the exception
+			        System.err.println("*** SQLException:  "
+			            + "Could not fetch query results.");
+			        System.exit(-1);
+				}
 			} else if(line.equals("d")) {
+				try {
+					// finding most profitable product
+					query = "SELECT * FROM(SELECT p.name, sur.amount*(p.retailPrice*COALESCE(p.memDiscount,1)-sur.purchasePrice) totalProfit FROM yungbluth.Product p JOIN yungbluth.SupplyRecord sur ON p.productID = sur.productID ORDER BY totalProfit DESC) WHERE ROWNUM <=1";
+					stmt = dbconn.createStatement();
+				    answer = stmt.executeQuery(query);
+				    if (answer != null) {
+				    	
+				        // Get the data about the query result to learn
+				        // the attribute names and use them as column headers
+				        ResultSetMetaData answermetadata = answer.getMetaData();
+				        for (int i = 1; i <= answermetadata.getColumnCount(); i++) {
+				            System.out.print(answermetadata.getColumnName(i) + "\t\t");
+				        }
+				        System.out.println();
 				
+				        // Use next() to advance cursor through the result
+				        // tuples and print their attribute values
+				        String format = "";
+				        while (answer.next()) {
+				        	// formatting the output neatly
+				        	format = String.format("%-16s", answer.getString("name"));
+				        	System.out.println(format + answer.getDouble("totalProfit"));	
+				        }
+				    }
+				    System.out.println();
+				} catch (SQLException e) {
+					// catching the exception
+			        System.err.println("*** SQLException:  "
+			            + "Could not fetch query results.");
+			        System.exit(-1);
+				}
 			} else { //means line is e
+				try {
+					// find top 10 members with highest spending
+					query = "SELECT * FROM (SELECT firstName, lastName, totalPrice FROM yungbluth.Member m JOIN yungbluth.SaleRecord sar ON m.memID = sar.memID ORDER BY totalPrice DESC) WHERE ROWNUM <= 10";
+					stmt = dbconn.createStatement();
+				    answer = stmt.executeQuery(query);
+				    if (answer != null) {
+				    	
+				        // Get the data about the query result to learn
+				        // the attribute names and use them as column headers
+				        ResultSetMetaData answermetadata = answer.getMetaData();
+				        for (int i = 1; i <= answermetadata.getColumnCount(); i++) {
+				            System.out.print(answermetadata.getColumnName(i) + "\t");
+				        }
+				        System.out.println();
 				
+				        // Use next() to advance cursor through the result
+				        // tuples and print their attribute values
+				        String format = "";
+				        String lastName = "";
+				        while (answer.next()) {
+				        	// formatting the output neatly
+				        	format = String.format("%-16s", answer.getString("firstName"));
+				        	lastName = String.format("%-16s", answer.getString("lastName"));
+				        	System.out.println(format + lastName + answer.getDouble("totalPrice"));	
+				        }
+				    }
+				    System.out.println();
+				} catch (SQLException e) {
+					// catching the exception
+			        System.err.println("*** SQLException:  "
+			            + "Could not fetch query results.");
+			        System.exit(-1);
+				}
 			}
 			
 			System.out.print("Enter choice: ");
