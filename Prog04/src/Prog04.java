@@ -13,14 +13,14 @@ public class Prog04 {
 		
 		if (args.length == 2) {    // get username/password from cmd line args
 			username = args[0];
-            password = args[1];
+			password = args[1];
 		} else {
-            System.out.println("\nUsage:  java JDBC <username> <password>\n"
+			System.out.println("\nUsage:  java JDBC <username> <password>\n"
                              + "    where <username> is your Oracle DBMS"
                              + " username,\n    and <password> is your Oracle"
                              + " password (not your system password).\n");
-            System.exit(-1);
-        }
+			System.exit(-1);
+		}
 		// load the (Oracle) JDBC driver by initializing its base
         // class, 'oracle.jdbc.OracleDriver'.
 
@@ -30,10 +30,10 @@ public class Prog04 {
 
 		} catch (ClassNotFoundException e) {
 
-            System.err.println("*** ClassNotFoundException:  "
-                + "Error loading Oracle JDBC driver.  \n"
-                + "\tPerhaps the driver is not on the Classpath?");
-            System.exit(-1);
+			System.err.println("*** ClassNotFoundException:  "
+					+ "Error loading Oracle JDBC driver.  \n"
+					+ "\tPerhaps the driver is not on the Classpath?");
+			System.exit(-1);
 
 		}
 	    // make and return a database connection to the user's
@@ -42,17 +42,17 @@ public class Prog04 {
 		Connection dbconn = null;
 
 		try {
-            dbconn = DriverManager.getConnection
+			dbconn = DriverManager.getConnection
                            (oracleURL,username,password);
 
 		} catch (SQLException e) {
 			
-            System.err.println("*** SQLException:  "
-                + "Could not open JDBC connection.");
-            System.err.println("\tMessage:   " + e.getMessage());
-            System.err.println("\tSQLState:  " + e.getSQLState());
-            System.err.println("\tErrorCode: " + e.getErrorCode());
-            System.exit(-1);
+			System.err.println("*** SQLException:  "
+					+ "Could not open JDBC connection.");
+			System.err.println("\tMessage:   " + e.getMessage());
+			System.err.println("\tSQLState:  " + e.getSQLState());
+			System.err.println("\tErrorCode: " + e.getErrorCode());
+			System.exit(-1);
 
 		}
 		
