@@ -136,7 +136,7 @@ public class Prog04 {
 			} else if(line.equals("d")) {
 				try {
 					// finding most profitable product
-					query = "SELECT * FROM(SELECT p.name, sur.amount*(p.retailPrice*COALESCE(p.memDiscount,1)-sur.purchasePrice) totalProfit FROM yungbluth.Product p JOIN yungbluth.SupplyRecord sur ON p.productID = sur.productID ORDER BY totalProfit DESC) WHERE ROWNUM <=1";
+					query = "SELECT * FROM(SELECT p.name, sur.amount*(p.retailPrice-COALESCE(p.memDiscount,1)-sur.purchasePrice) totalProfit FROM yungbluth.Product p JOIN yungbluth.SupplyRecord sur ON p.productID = sur.productID ORDER BY totalProfit DESC) WHERE ROWNUM <=1";
 					stmt = dbconn.createStatement();
 				    answer = stmt.executeQuery(query);
 				    if (answer != null) {
