@@ -76,9 +76,347 @@ public class Prog04 {
 		
 		//while input is a, b, c, d, or e for the query
 		while(line.equals("a") || line.equals("b") || line.equals("c") || line.equals("d") || line.equals("e")) {
+			
+			
+			
+			//OPTION A
 			if(line.equals("a")) {
+				try {
+					stmt = dbconn.createStatement();
+				} catch (SQLException e) {
+					System.err.println("Unable to create statement.");
+					System.exit(-1);
+				}
+				System.out.print("Member, Employee, Product, or Supplier? ");
+				line = input.nextLine().toLowerCase();
 				
+				//while it's not a proper response, 
+				while(!line.equals("member") && !line.equals("employee") && 
+					  !line.equals("product") && !line.equals("supplier") ){
+					
+					System.out.println("Invalid response, try again");
+					System.out.print("Member, Employee, Product, or Supplier? ");
+					line = input.nextLine().toLowerCase();	
+					
+				}
+				
+				
+				
+				//loop helps make input case insensitive but database tables names are slightly different
+				//this corrects it
+				if(line.equals("member")) { //MEMBER
+					
+					System.out.println("Add, update, or delete?");
+					line = input.nextLine().toLowerCase();
+					
+					//proper response loop
+					while(!line.equals("add") && !line.equals("update") && !line.equals("delete")) {
+						System.out.println("Invalid response, try again");
+						System.out.println("Add, update, or delete?");
+						line = input.nextLine().toLowerCase();
+					}
+					
+					
+					if(line.equals("add")) { //ADD MEMBER
+						String firstName;
+						String lastName;
+						String birthDate;
+						String address;
+						String phoneNum;
+						int rewardPts;
+						System.out.print("First Name: ");
+						firstName = input.nextLine();
+						System.out.print("Last Name: ");
+						lastName = input.nextLine();
+						System.out.print("Birth date: ");
+						//add regex?
+						birthDate = input.nextLine();
+						System.out.print("Address: ");
+						address = input.nextLine();
+						System.out.print("Phone Number: ");
+						//add regex?
+						phoneNum = input.nextLine();
+						System.out.print("Reward Points: ");
+						//add check for int here.
+						rewardPts = Integer.valueOf(input.nextLine());
+						
+						Member member = new Member(firstName, lastName, birthDate, address, phoneNum, rewardPts);
+						member.addMember(stmt);
+						
+						
+					} else if(line.equals("update")) { //UPDATE MEMBER
+						
+						Member member = new Member();
+						Integer memID;
+						System.out.print("Member ID: ");
+						memID = Integer.valueOf(input.nextLine());
+						member.getMemberByID(memID);
+						//use setters here to change it and then call update function
+						
+						
+					} else if(line.equals("delete")) { //DELETE MEMBER
+						Integer memID;
+						System.out.print("Member ID: ");
+						memID = Integer.valueOf(input.nextLine());
+						try {
+							//scrub this maybe?
+							stmt.executeQuery("delete from yungbluth.Member where memid = " + memID);
+							//ADD REMOVAL OF FOREIGN KEYS
+						} catch (SQLException e) {
+							System.err.println("Could not delete Member");
+							System.exit(-1);
+						}
+					}
+					
+				} else if(line.equals("employee")) { //EMPLOYEE
+					
+					System.out.println("Add, update, or delete?");
+					line = input.nextLine().toLowerCase();
+					
+					//proper response loop
+					while(!line.equals("add") && !line.equals("update") && !line.equals("delete")) {
+						System.out.println("Invalid response, try again");
+						System.out.println("Add, update, or delete?");
+						line = input.nextLine().toLowerCase();
+					}
+					
+					
+					if(line.equals("add")) { //ADD EMPLOYEE
+						
+						String firstName;
+						String lastName;
+						String gender;
+						String address;
+						String phoneNum;
+						String group;
+						int salary;
+						System.out.print("First Name: ");
+						firstName = input.nextLine();
+						System.out.print("Last Name: ");
+						lastName = input.nextLine();
+						System.out.print("Gender: ");
+						gender = input.nextLine();
+						System.out.print("Address: ");
+						address = input.nextLine();
+						System.out.print("Phone Number: ");
+						//add regex?
+						phoneNum = input.nextLine();
+						System.out.print("Group: ");
+						group = input.nextLine();
+						System.out.print("Salary: ");
+						//add check for int here.
+						salary = Integer.valueOf(input.nextLine());
+						
+						Employee employee = new Employee(firstName, lastName, gender, address, phoneNum, group, salary);
+						employee.addEmployee(stmt);
+						
+					} else if(line.equals("update")) { //UPDATE EMPLOYEE
+						
+					} else if(line.equals("delete")) { //DELETE EMPLOYEE
+						
+						Integer employeeID;
+						System.out.print("Employee ID: ");
+						employeeID = Integer.valueOf(input.nextLine());
+						try {
+							stmt.executeQuery("delete from yungbluth.Employee where empid = " + employeeID);
+							//ADD REMOVAL OF FOREIGN KEYS
+						} catch (SQLException e) {
+							System.err.println("Could not delete Employee");
+							System.exit(-1);
+						}
+						
+					}
+					
+				} else if(line.equals("product")) { //PRODUCT
+					
+					System.out.println("Add, update, or delete?");
+					line = input.nextLine().toLowerCase();
+					
+					//proper response loop
+					while(!line.equals("add") && !line.equals("update") && !line.equals("delete")) {
+						System.out.println("Invalid response, try again");
+						System.out.println("Add, update, or delete?");
+						line = input.nextLine().toLowerCase();
+					}
+					
+					if(line.equals("add")) { // ADD PRODUCT
+						
+						String name;
+						Integer retailPrice;
+						String category;
+						Integer memDiscount;
+						Integer stockInfo;
+						
+
+						System.out.print("Name: ");
+						name = input.nextLine();
+						System.out.print("Retail Price: ");
+						//add int checks
+						retailPrice = Integer.valueOf(input.nextLine());
+						System.out.print("Category: ");
+						category = input.nextLine();
+						System.out.print("Member discount: ");
+						//add int checks
+						memDiscount = Integer.valueOf(input.nextLine());
+						System.out.print("Stock info: ");
+						//add int checks
+						stockInfo = Integer.valueOf(input.nextLine());
+						
+						Product product = new Product(name, retailPrice, category, memDiscount, stockInfo);
+						product.addProduct(stmt);
+						
+					} else if(line.equals("update")) { //UPDATE PRODUCT
+						
+					} else if(line.equals("delete")) { //DELETE PRODUCT
+						
+						Integer productID;
+						System.out.print("Product ID: ");
+						productID = Integer.valueOf(input.nextLine());
+						try {
+							stmt.executeQuery("delete from yungbluth.Employee where productid = " + productID);
+							//ADD REMOVAL OF FOREIGN KEYS
+						} catch (SQLException e) {
+							System.err.println("Could not delete Product");
+							System.exit(-1);
+						}
+						
+					}
+					
+				} else if(line.equals("supplier")) { //SUPPLIER
+					
+					System.out.println("Add, update, or delete?");
+					line = input.nextLine().toLowerCase();
+					
+					//proper response loop
+					while(!line.equals("add") && !line.equals("update") && !line.equals("delete")) {
+						System.out.println("Invalid response, try again");
+						System.out.println("Add, update, or delete?");
+						line = input.nextLine().toLowerCase();
+					}
+					
+					if(line.equals("add")) { //ADD SUPPLIER
+						
+						String name;
+						String address;
+						String contactPerson;
+
+						System.out.print("Name: ");
+						name = input.nextLine();
+						System.out.print("Address: ");
+						address = input.nextLine();
+						System.out.print("Contact Person: ");
+						contactPerson = input.nextLine();
+						
+						Supplier supplier = new Supplier(name, address, contactPerson);
+						supplier.addSupplier(stmt);
+						
+						
+					} else if(line.equals("update")) { //UPDATE SUPPLIER
+						
+					} else if(line.equals("delete")) { //DELETE SUPPLIER
+						
+						Integer productID;
+						System.out.print("Supplier ID: ");
+						productID = Integer.valueOf(input.nextLine());
+						try {
+							stmt.executeQuery("delete from yungbluth.Employee where productid = " + productID);
+							//ADD THE REMOVAL OF ALL THINGS IN THE SALES/SUBRECORDS ASSOCIATED WITH SUPPLIER ID
+						} catch (SQLException e) {
+							System.err.println("Could not delete Product");
+							System.exit(-1);
+						}
+					}
+
+				}
+				
+				
+				
+				
+			// OPTION B
 			} else if(line.equals("b")) {
+				
+				try {
+					stmt = dbconn.createStatement();
+				} catch (SQLException e) {
+					System.err.println("Unable to create statement.");
+					System.exit(-1);
+				}
+				
+				System.out.print("SalesRecord or SubRecord? ");
+				line = input.nextLine().toLowerCase();
+				
+				//proper response loop
+				while(!line.equals("salesrecord") && !line.equals("subrecord")){
+					System.out.println("Invalid response, try again");
+					System.out.print("SalesRecord or SubRecord? ");
+					line = input.nextLine().toLowerCase();
+				}
+				
+				
+				if(line.equals("salesrecord")) { //SALESRECORD
+					
+					System.out.println("Add, update, or delete?");
+					line = input.nextLine().toLowerCase();
+					
+					//proper response loop
+					while(!line.equals("add") && !line.equals("update") && !line.equals("delete")) {
+						System.out.println("Invalid response, try again");
+						System.out.println("Add, update, or delete?");
+						line = input.nextLine().toLowerCase();
+					}
+					
+					if(line.equals("add")) { //ADD SALESRECORD
+						
+						String saleDate;
+						String paymentMethod;
+						Integer totalPrice;
+						Integer memID;
+						
+						System.out.print("Sale Date: ");
+						saleDate = input.nextLine();
+						System.out.print("Payment Method: ");
+						paymentMethod = input.nextLine();
+						System.out.print("Total Price: ");
+						//place Integer checks
+						totalPrice = Integer.valueOf(input.nextLine());
+						System.out.print("Member ID: ");
+						//place Integer checks
+						memID = Integer.valueOf(input.nextLine());
+						
+						SalesRecord salesRecord = new SalesRecord(saleDate, paymentMethod, totalPrice, memID);
+						salesRecord.addSalesRecord(stmt);
+						
+						
+						
+					} else if(line.equals("update")) { //UPDATE SALESRECORD
+						
+					} else if(line.equals("delete")) { //DELETE SALESRECORD
+						
+					}
+					
+				} else if(line.equals("subrecord")) { //SUBRECORD
+					
+					System.out.println("Add, update, or delete?");
+					line = input.nextLine().toLowerCase();
+					
+					//proper response loop
+					while(!line.equals("add") && !line.equals("update") && !line.equals("delete")) {
+						System.out.println("Invalid response, try again");
+						System.out.println("Add, update, or delete?");
+						line = input.nextLine().toLowerCase();
+					}
+					
+					if(line.equals("add")) { //ADD SUBRECORD
+						
+					} else if(line.equals("update")) { //UPDATE SUBRECORD
+						
+					} else if(line.equals("delete")) { //DELETE SUBRECORD
+						
+					}
+
+				}
+				
+				
 				
 			} else if(line.equals("c")) {
 				String phoneNumber="";
@@ -207,14 +545,23 @@ public class Prog04 {
 		}
 		
 		input.close();
+		try {
+			stmt.close();
+		} catch (SQLException e) {
+			
+			System.err.println("Could not close statement");
+			System.exit(-1);
+		}
 	}
 	
+
+}
 	//classes together for now can separate into files later.
 	//methods that take in the Statement object should use it to either receive from the DB
 	//or send to the DB.
 	//feel free to add methods and arguments to methods that may be needed 
 	class Employee{
-		int empID;
+		
 		String firstName;
 		String lastName;
 		String gender;
@@ -228,9 +575,9 @@ public class Prog04 {
 			
 		}
 		
-		public Employee(int empID, String firstName, String lastName, String gender, 
+		public Employee(String firstName, String lastName, String gender, 
 						String address, String phoneNum, String group, int salary) { // salary may become a decimal?
-			this.empID = empID;
+
 			this.firstName = firstName;
 			this.lastName = lastName;
 			this.gender = gender;
@@ -253,10 +600,23 @@ public class Prog04 {
 		public void updateEmployee(Statement stmt) {
 			
 		}
+		
+		public void addEmployee(Statement stmt) {
+			try {
+				System.out.println("insert into yungbluth.Employee values(yungbluth.auto_Employee.nextval" +
+						", '" + firstName + "', '" + lastName + "', '" + gender +
+						"', '" + address + "', '" + phoneNum + "', '" + group + "', " + salary + ")");
+				stmt.executeQuery("insert into yungbluth.Employee values(yungbluth.auto_Employee.nextval" +
+						", '" + firstName + "', '" + lastName + "', '" + gender +
+						"', '" + address + "', '" + phoneNum + "', '" + group + "', " + salary + ")");
+			} catch (SQLException e) {
+				System.err.println("Could not create Employee");
+				System.exit(-1);
+			}
+		}
 	}
 	class Member{
 		
-		int memID;
 		String firstName;
 		String lastName;
 		String birthDate;
@@ -269,9 +629,9 @@ public class Prog04 {
 			
 		}
 		
-		public Member(int memID, String firstName, String lastName, String birthDate,
+		public Member(String firstName, String lastName, String birthDate,
 					  String address, String phoneNum, int rewardPts) {
-			this.memID = memID;
+
 			this.firstName = firstName;
 			this.lastName = lastName;
 			this.birthDate = birthDate;
@@ -287,10 +647,19 @@ public class Prog04 {
 		public void getMemberByPhone(String phone) {
 			
 		}
+		public void addMember(Statement stmt){
+			try {
+				stmt.executeQuery("insert into yungbluth.Member values(yungbluth.auto_Member.nextval" +
+						", '" + firstName + "', '" + lastName + "', '" + birthDate +
+						"', '" + address + "', '" + phoneNum + "', " + rewardPts + ")");
+			} catch (SQLException e) {
+				System.err.println("Could not create Member");
+				System.exit(-1);
+			}
+		}
 		
 	}
 	class Product{
-		int productID;
 		String name;
 		int retailPrice;
 		String category;
@@ -301,9 +670,9 @@ public class Prog04 {
 			
 		}
 		
-		public Product(int productID, String name, int retailPrice, String category, 
+		public Product(String name, int retailPrice, String category, 
 					   int memDiscount, int stockInfo) {
-			this.productID = productID;
+
 			this.name = name;
 			this.retailPrice = retailPrice;
 			this.category = category;
@@ -315,10 +684,20 @@ public class Prog04 {
 			
 		}
 		
+		public void addProduct(Statement stmt) {
+			try {
+				stmt.executeQuery("insert into yungbluth.Product values(yungbluth.auto_Product.nextval" +
+						", '" + name + "', " + retailPrice + ", '" + category +
+						"', " + memDiscount + ", " + stockInfo + ")");
+			} catch (SQLException e) {
+				System.err.println("Could not create Product");
+				System.exit(-1);
+			}
+		}
+		
 	}
 	class SalesRecord{
 		
-		int saleID;
 		String saleDate;
 		String paymentMethod;
 		int totalPrice;
@@ -328,9 +707,9 @@ public class Prog04 {
 			
 		}
 		
-		public SalesRecord(int saleID, String saleDate, String paymentMethod,
+		public SalesRecord(String saleDate, String paymentMethod,
 						   int totalPrice, int memID) {
-			this.saleID = saleID;
+
 			this.saleDate = saleDate;
 			this.paymentMethod = paymentMethod;
 			this.totalPrice = totalPrice;
@@ -341,10 +720,21 @@ public class Prog04 {
 		public void getSalesRecord(Statement stmt, int saleID) {
 			
 		}
+		
+		public void addSalesRecord(Statement stmt) {
+			try {
+				stmt.executeQuery("insert into yungbluth.SalesRecord values(yungbluth.auto_SalesRecord.nextval" +
+						", '" + saleDate + "', '" + paymentMethod + "', " + totalPrice +
+						", " + memID + ")");
+			} catch (SQLException e) {
+				System.err.println("Could not create SalesRecord");
+				System.exit(-1);
+			}
+			
+		}
 	}
 	class SubRecord{
 		
-		int subSaleID;
 		int productID;
 		int saleID;
 		int price;
@@ -355,9 +745,8 @@ public class Prog04 {
 			
 		}
 		
-		public SubRecord(int subSaleID, int productID, int saleID,
+		public SubRecord( int productID, int saleID,
 						 int price, int amount) {
-			this.subSaleID = subSaleID;
 			this.productID = productID;
 			this.saleID = saleID;
 			this.price = price;
@@ -368,10 +757,20 @@ public class Prog04 {
 		public void getSubRecord(Statement stmt, int subSaleID) {
 			
 		}
+		
+		public void addSubRecord(Statement stmt) {
+			try {
+				stmt.executeQuery("insert into yungbluth.SubRecord values(yungbluth.auto_SubRecord.nextval" +
+						", " + productID + ", " + saleID + ", " + price +
+						", " + amount + ")");
+			} catch (SQLException e) {
+				System.err.println("Could not create SubRecord");
+				System.exit(-1);
+			}
+		}
 	}
 	class Supplier{
 		
-		int supplierID;
 		String name;
 		String address;
 		String contactPerson;
@@ -380,9 +779,7 @@ public class Prog04 {
 			
 		}
 		
-		public Supplier(int supplierID, String name, String address,
-						String contactPerson) {
-			this.supplierID = supplierID;
+		public Supplier(String name, String address, String contactPerson) {
 			this.name = name;
 			this.address = address;
 			this.contactPerson = contactPerson;
@@ -392,10 +789,19 @@ public class Prog04 {
 		public void getSupplier(Statement stmt, int supplierID) {
 			
 		}
+		
+		public void addSupplier(Statement stmt) {
+			try {
+				stmt.executeQuery("insert into yungbluth.Supplier values(yungbluth.auto_Supplier.nextval" +
+						", '" + name + "', '" + address + "', '" + contactPerson + "')");
+			} catch (SQLException e) {
+				System.err.println("Could not create Supplier");
+				System.exit(-1);
+			}
+		}
 	}
 	class SupplyRecord{
 		
-		int supplierID;
 		int productID;
 		String incomingDate;
 		int purchasePrice;
@@ -405,9 +811,9 @@ public class Prog04 {
 			
 		}
 		
-		public SupplyRecord(int supplierID, int productID, String incomingDate,
+		public SupplyRecord(int productID, String incomingDate,
 							int purchasePrice, int amount) {
-			this.supplierID = supplierID;
+
 			this.productID = productID;
 			this.incomingDate = incomingDate;
 			this.purchasePrice = purchasePrice;
@@ -420,5 +826,4 @@ public class Prog04 {
 		
 	}
 
-}
 
