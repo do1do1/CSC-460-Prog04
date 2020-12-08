@@ -152,7 +152,9 @@ public class Prog04 {
 						memID = Integer.valueOf(input.nextLine());
 						member.getMemberByID(memID);
 						//use setters here to change it and then call update function
-						
+						query="UPDATE yungbluth.Member member WHERE member.";
+						stmt=dbconn.createStatement();
+						stmt.executeQuery(query);
 						
 					} else if(line.equals("delete")) { //DELETE MEMBER
 						Integer memID;
@@ -643,10 +645,28 @@ public class Prog04 {
 			
 		}
 		
-		public void getMemberByID(int id) {
+		public void getMemberByID(Connection dbconn, int id) {
+			String query="SELECT * FROM yungbluth.Member WHERE memID = "+id;
+			Statement stmt=dbconn.createStatement();
+			ResultSet answer=stmt.executeQuery(query);
+			this.firstName=answer.getString("firstName");
+			this.lastName=answer.getString("lastName");
+			this.birthDate=answer.getString("birthDate");
+			this.address=answer.getString("address");
+			this.phoneNum=answer.getString("phoneNum");
+			this.rewardPts=answer.getInt("rewardpts");
 			
 		}
-		public void getMemberByPhone(String phone) {
+		public void getMemberByPhone(Connection dbconn, String phone) {
+			String query="SELECT * FROM yungbluth.Member WHERE phoneNum = "+phone;
+			Statement stmt=dbconn.createStatement();
+			ResultSet answer=stmt.executeQuery(query);
+			this.firstName=answer.getString("firstName");
+			this.lastName=answer.getString("lastName");
+			this.birthDate=answer.getString("birthDate");
+			this.address=answer.getString("address");
+			this.phoneNum=answer.getString("phoneNum");
+			this.rewardPts=answer.getInt("rewardpts");
 			
 		}
 		public void addMember(Statement stmt){
@@ -682,8 +702,15 @@ public class Prog04 {
 			this.stockInfo = stockInfo;
 		}
 		
-		public void getProduct(Statement stmt, int productID) {
-			
+		public void getProduct(Connection dbconn, int productID) {
+			String query="SELECT * FROM yungbluth.Product WHERE productID = "+productID;
+			Statement stmt=dbconn.createStatement();
+			ResultSet answer=stmt.executeQuery(query);
+			this.name=answer.getString("name");
+			this.retailPrice=answer.getInt("retailPrice");
+			this.category=answer.getString("category");
+			this.memDiscount=answer.getInt("memDiscount");
+			this.stockInfo=answer.getInt("stockInfo");
 		}
 		
 		public void addProduct(Statement stmt) {
@@ -719,8 +746,14 @@ public class Prog04 {
 			
 		}
 		
-		public void getSalesRecord(Statement stmt, int saleID) {
-			
+		public void getSalesRecord(Connection dbconn, int saleID) {
+			String query="SELECT * FROM yungbluth.SalesRecord WHERE saleID = "+saleID;
+			Statement stmt=dbconn.createStatement();
+			ResultSet answer=stmt.executeQuery(query);
+			this.saleDate=answer.getString("saleDate");
+			this.paymentMethod=answer.getString("paymentMethod");
+			this.totalPrice=answer.getInt("totalPrice");
+			this.memID=answer.getInt("memID");
 		}
 		
 		public void addSalesRecord(Statement stmt) {
@@ -756,7 +789,14 @@ public class Prog04 {
 			
 		}
 		
-		public void getSubRecord(Statement stmt, int subSaleID) {
+		public void getSubRecord(Connection dbconn, int subSaleID) {
+			String query="SELECT * FROM yungbluth.SubRecord WHERE subSaleID = "+subSaleID;
+			Statement stmt=dbconn.createStatement();
+			ResultSet answer=stmt.executeQuery(query);
+			this.productID=answer.getInt("productID");
+			this.saleID=answer.getInt("saleID");
+			this.price=answer.getInt("price");
+			this.amount=answer.getInt("amount");			
 			
 		}
 		
@@ -788,8 +828,13 @@ public class Prog04 {
 			
 		}
 		
-		public void getSupplier(Statement stmt, int supplierID) {
-			
+		public void getSupplier(Connection dbconn, int supplierID) {
+			String query="SELECT * FROM yungbluth.Supplier WHERE supplierID = "+supplierID;
+			Statement stmt=dbconn.createStatement();
+			ResultSet answer=stmt.executeQuery(query);
+			this.name=answer.getString("name");
+			this.address=answer.getString("address");
+			this.contactPerson=answer.getString("contactPerson");
 		}
 		
 		public void addSupplier(Statement stmt) {
@@ -822,7 +867,14 @@ public class Prog04 {
 			this.amount = amount;
 			
 		}
-		public void getSupplyRecord(Statement stmt, int supplierID, int productID) {
+		public void getSupplyRecord(Connection dbconn, int supplierID, int productID) {
+			String query="SELECT * FROM yungbluth.SupplyRecord WHERE supplierID = "+supplierID+" AND productID = "+productID;
+			Statement stmt=dbconn.createStatement();
+			ResultSet answer=stmt.executeQuery(query);
+			this.productID=answer.getInt("productID");
+			this.incomingDate=answer.getString("incomingDate");
+			this.purchasePrice=answer.getInt("purchasePrice");
+			this.amount=answer.getInt("amount");
 			
 		}
 		
