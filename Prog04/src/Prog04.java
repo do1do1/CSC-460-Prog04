@@ -159,7 +159,8 @@ public class Prog04 {
 						System.out.print("Member ID: ");
 						memID = Integer.valueOf(input.nextLine());
 						try {
-							//scrub this maybe?
+							stmt.executeQuery("delete from yungbluth.SubRecord sub WHERE sub.subSaleID = (SELECT sub.subSaleID FROM yungbluth.SubRecord sub JOIN yungbluth.SaleRecord sale on sub.saleID = sale.saleID where memid = " + memID.toString() + ")");
+							stmt.executeQuery("delete from yungbluth.SaleRecord where memid = " + memID);
 							stmt.executeQuery("delete from yungbluth.Member where memid = " + memID);
 							//ADD REMOVAL OF FOREIGN KEYS
 						} catch (SQLException e) {
@@ -219,7 +220,6 @@ public class Prog04 {
 						employeeID = Integer.valueOf(input.nextLine());
 						try {
 							stmt.executeQuery("delete from yungbluth.Employee where empid = " + employeeID);
-							//ADD REMOVAL OF FOREIGN KEYS
 						} catch (SQLException e) {
 							System.err.println("Could not delete Employee");
 							System.exit(-1);
@@ -273,7 +273,9 @@ public class Prog04 {
 						System.out.print("Product ID: ");
 						productID = Integer.valueOf(input.nextLine());
 						try {
-							stmt.executeQuery("delete from yungbluth.Employee where productid = " + productID);
+							stmt.executeQuery("delete from yungbluth.SupplyRecord WHERE productID = " + productID);
+							stmt.executeQuery("delete from yungbluth.SubRecord WHERE productID = " + productID);
+							stmt.executeQuery("delete from yungbluth.Product where productid = " + productID);
 							//ADD REMOVAL OF FOREIGN KEYS
 						} catch (SQLException e) {
 							System.err.println("Could not delete Product");
@@ -315,12 +317,12 @@ public class Prog04 {
 						
 					} else if(line.equals("delete")) { //DELETE SUPPLIER
 						
-						Integer productID;
+						Integer supplierID;
 						System.out.print("Supplier ID: ");
-						productID = Integer.valueOf(input.nextLine());
+						supplierID = Integer.valueOf(input.nextLine());
 						try {
-							stmt.executeQuery("delete from yungbluth.Employee where productid = " + productID);
-							//ADD THE REMOVAL OF ALL THINGS IN THE SALES/SUBRECORDS ASSOCIATED WITH SUPPLIER ID
+							stmt.executeQuery("delete from yungbluth.SupplyRecord where supplierid = " + supplierID);
+							stmt.executeQuery("delete from yungbluth.Supplier where supplierid = " + supplierID);
 						} catch (SQLException e) {
 							System.err.println("Could not delete Product");
 							System.exit(-1);
