@@ -594,9 +594,17 @@ public class Prog04 {
 		
 		//meant to grab an Employee record in the form of an object
 		//maybe we write setters to modify and then use updateEmployee to push it back?
-		public void getEmployee(Statement stmt, int empID) { 
-			//use stmt to get the employee
-			//assign by answer.getInt()/answer.getString()
+		public void getEmployee(Connection dbconn, int empID) { 
+			String query="SELECT * FROM yungbluth.Member WHERE memID = "+id;
+			Statement stmt=dbconn.createStatement();
+			ResultSet answer=stmt.executeQuery(query);
+			this.firstName=answer.getString("firstName");
+			this.lastName=answer.getString("lastName");
+			this.gender=answer.getString("gender");
+			this.address=answer.getString("address");
+			this.phoneNum=answer.getString("phoneNum");
+			this.group=answer.getString("group");
+			this.salary=answer.getInt("salary");
 			
 		}
 		
