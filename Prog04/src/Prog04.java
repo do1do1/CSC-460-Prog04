@@ -150,11 +150,41 @@ public class Prog04 {
 						Integer memID;
 						System.out.print("Member ID: ");
 						memID = Integer.valueOf(input.nextLine());
-						member.getMemberByID(memID);
+						member.getMemberByID(dbconn, memID);
+						System.out.print("Update First Name to: (press enter to not) ");
+						String userInput;
+						userInput = input.nextLine();
+						if(!userInput.isEmpty()) {
+							member.firstName = userInput;
+						}
+						System.out.print("Update Last Name to: (press enter to not) ");
+						userInput = input.nextLine();
+						if(!userInput.isEmpty()) {
+							member.lastName = userInput;
+						}
+						System.out.print("Update Birth Date to: (press enter to not) ");
+						userInput = input.nextLine();
+						if(!userInput.isEmpty()) {
+							member.birthDate = userInput;
+						}
+						System.out.print("Update Address to: (press enter to not) ");
+						userInput = input.nextLine();
+						if(!userInput.isEmpty()) {
+							member.address = userInput;
+						}
+						System.out.print("Update Phone Number to: (press enter to not) ");
+						userInput = input.nextLine();
+						if(!userInput.isEmpty()) {
+							member.phoneNum = userInput;
+						}
+						System.out.print("Update Reward Points to: (press enter to not) ");
+						userInput = input.nextLine();
+						if(!userInput.isEmpty()) {
+							member.rewardPts = Integer.parseInt(userInput);
+						}
 						//use setters here to change it and then call update function
-						query="UPDATE yungbluth.Member member WHERE member.";
-						stmt=dbconn.createStatement();
-						stmt.executeQuery(query);
+						member.updateMember(stmt,memID);
+						System.out.println();
 						
 					} else if(line.equals("delete")) { //DELETE MEMBER
 						Integer memID;
@@ -214,7 +244,40 @@ public class Prog04 {
 						employee.addEmployee(stmt);
 						
 					} else if(line.equals("update")) { //UPDATE EMPLOYEE
+						Employee emp = new Employee();
+						Integer empID;
+						System.out.print("Employee ID: ");
+						empID = Integer.valueOf(input.nextLine());
+						emp.getEmployeeByID(dbconn, empID);
+						System.out.print("Update First Name to: (press enter to not) ");
+						String userInput;
+						userInput = input.nextLine();
+						if(!userInput.isEmpty()) {
+							emp.firstName = userInput;
+						}
+						System.out.print("Update Last Name to: (press enter to not) ");
+						userInput = input.nextLine();
+						if(!userInput.isEmpty()) {
+							emp.lastName = userInput;
+						}
+						System.out.print("Update Gender to: (press enter to not) ");
+						userInput = input.nextLine();
+						if(!userInput.isEmpty()) {
+							emp.gender = userInput;
+						}
+						System.out.print("Update Group to: (press enter to not) ");
+						userInput = input.nextLine();
+						if(!userInput.isEmpty()) {
+							emp.group = userInput;
+						}
+						System.out.print("Update Salary to: (press enter to not) ");
+						userInput = input.nextLine();
+						if(!userInput.isEmpty()) {
+							emp.salary = Integer.parseInt(userInput);
+						}
 						
+						emp.updateEmployee(stmt,empID);
+						System.out.println();
 					} else if(line.equals("delete")) { //DELETE EMPLOYEE
 						
 						Integer employeeID;
@@ -268,7 +331,40 @@ public class Prog04 {
 						product.addProduct(stmt);
 						
 					} else if(line.equals("update")) { //UPDATE PRODUCT
+						Product prod = new Product();
+						Integer prodID;
+						System.out.print("Product ID: ");
+						prodID = Integer.valueOf(input.nextLine());
+						prod.getProduct(dbconn, prodID);
+						System.out.print("Update Name to: (press enter to not) ");
+						String userInput;
+						userInput = input.nextLine();
+						if(!userInput.isEmpty()) {
+							prod.name = userInput;
+						}
+						System.out.print("Update Retail Price to: (press enter to not) ");
+						userInput = input.nextLine();
+						if(!userInput.isEmpty()) {
+							prod.retailPrice = Integer.parseInt(userInput);
+						}
+						System.out.print("Update Category to: (press enter to not) ");
+						userInput = input.nextLine();
+						if(!userInput.isEmpty()) {
+							prod.category = userInput;
+						}
+						System.out.print("Update MemDiscount to: (press enter to not) ");
+						userInput = input.nextLine();
+						if(!userInput.isEmpty()) {
+							prod.memDiscount = Integer.parseInt(userInput);
+						}
+						System.out.print("Update StockInfo to: (press enter to not) ");
+						userInput = input.nextLine();
+						if(!userInput.isEmpty()) {
+							prod.stockInfo = Integer.parseInt(userInput);
+						}
 						
+						prod.updateProduct(stmt,prodID);
+						System.out.println();
 					} else if(line.equals("delete")) { //DELETE PRODUCT
 						
 						Integer productID;
@@ -316,7 +412,30 @@ public class Prog04 {
 						
 						
 					} else if(line.equals("update")) { //UPDATE SUPPLIER
+						Supplier supplier = new Supplier();
+						Integer supplierID;
+						System.out.print("Supplier ID: ");
+						supplierID = Integer.valueOf(input.nextLine());
+						supplier.getSupplierByID(dbconn, supplierID);
+						System.out.print("Update Name to: (press enter to not) ");
+						String userInput;
+						userInput = input.nextLine();
+						if(!userInput.isEmpty()) {
+							supplier.name = userInput;
+						}
+						System.out.print("Update Address to: (press enter to not) ");
+						userInput = input.nextLine();
+						if(!userInput.isEmpty()) {
+							supplier.address = userInput;
+						}
+						System.out.print("Update ContactPerson to: (press enter to not) ");
+						userInput = input.nextLine();
+						if(!userInput.isEmpty()) {
+							supplier.contactPerson = userInput;
+						}
 						
+						supplier.updateSupplier(stmt,supplierID);
+						System.out.println();
 					} else if(line.equals("delete")) { //DELETE SUPPLIER
 						
 						Integer supplierID;
@@ -595,25 +714,30 @@ public class Prog04 {
 		//The .get() methods on our classes all function the same way. We find the specific tuple 
 		//in the database by searching for the primary key, and then we update a blank object (of that class)
 		//by replacing its current attributes with the attributes from the tuple we searched for
-		public void getEmployee(Connection dbconn, int empID) { 
-			String query="SELECT * FROM yungbluth.Member WHERE memID = "+id;
-			Statement stmt=dbconn.createStatement();
-			ResultSet answer=stmt.executeQuery(query);
-			this.firstName=answer.getString("firstName");
-			this.lastName=answer.getString("lastName");
-			this.gender=answer.getString("gender");
-			this.address=answer.getString("address");
-			this.phoneNum=answer.getString("phoneNum");
-			this.group=answer.getString("group");
-			this.salary=answer.getInt("salary");
+		public void getEmployeeByID(Connection dbconn, int empID) { 
+			try {
+				String query="SELECT firstName,lastName,gender,address,phoneNum,empgroup,salary FROM yungbluth.Employee WHERE empID = "+empID;
+				Statement stmt=dbconn.createStatement();
+				ResultSet answer=stmt.executeQuery(query);
+				if(answer!=null) {
+					while(answer.next()) {
+						this.firstName=answer.getString("firstName");
+						this.lastName=answer.getString("lastName");
+						this.gender=answer.getString("gender");
+						this.address=answer.getString("address");
+						this.phoneNum=answer.getString("phoneNum");
+						this.group=answer.getString("empgroup");
+						this.salary=answer.getInt("salary");
+					}
+				}
+			} catch (SQLException e) {
+				System.err.println("Could not get employee");
+				System.exit(-1);
+			}			
 			
 		}
 		
 		//push current info of employee back to the table if called
-		public void updateEmployee(Statement stmt) {
-			
-		}
-		
 		public void addEmployee(Statement stmt) {
 			try {
 				System.out.println("insert into yungbluth.Employee values(yungbluth.auto_Employee.nextval" +
@@ -624,6 +748,17 @@ public class Prog04 {
 						"', '" + address + "', '" + phoneNum + "', '" + group + "', " + salary + ")");
 			} catch (SQLException e) {
 				System.err.println("Could not create Employee");
+				System.exit(-1);
+			}
+		}
+		
+		public void updateEmployee(Statement stmt, int empID){
+			try {
+				System.out.println("update yungbluth.Employee SET firstname = '" + this.firstName + "', lastname= '" + this.lastName + "', gender= '" +this.gender + "', address='" + this.address + "', phonenum='" + this.phoneNum + "', empgroup='" + this.group + "', salary=" + this.salary + " where empID = " + empID);
+				stmt.executeQuery("update yungbluth.Employee SET firstname = '" + this.firstName + "', lastname= '" + this.lastName + "', gender= '" +
+						this.gender + "', address='" + this.address + "', phonenum='" + this.phoneNum + "', empgroup='" + this.group + "', salary=" + this.salary + " where empID = " + empID);
+			} catch (SQLException e) {
+				System.err.println("Could not update employee");
 				System.exit(-1);
 			}
 		}
@@ -658,17 +793,28 @@ public class Prog04 {
 				//in the database by searching for the primary key, and then we update a blank object (of that class)
 				//by replacing its current attributes with the attributes from the tuple we searched for
 		public void getMemberByID(Connection dbconn, int id) {
-			String query="SELECT * FROM yungbluth.Member WHERE memID = "+id;
-			Statement stmt=dbconn.createStatement();
-			ResultSet answer=stmt.executeQuery(query);
-			this.firstName=answer.getString("firstName");
-			this.lastName=answer.getString("lastName");
-			this.birthDate=answer.getString("birthDate");
-			this.address=answer.getString("address");
-			this.phoneNum=answer.getString("phoneNum");
-			this.rewardPts=answer.getInt("rewardpts");
+			try {
+				String query="SELECT firstName, lastName, birthDate, address, phoneNum, rewardpts FROM yungbluth.Member WHERE memID = "+String.valueOf(id);
+				Statement stmt=dbconn.createStatement();
+				ResultSet answer=stmt.executeQuery(query);
+				if(answer!=null) {
+					while(answer.next()) {
+						this.firstName=answer.getString("firstName");
+						this.lastName=answer.getString("lastName");
+						this.birthDate=answer.getString("birthDate");
+						this.address=answer.getString("address");
+						this.phoneNum=answer.getString("phoneNum");
+						this.rewardPts=answer.getInt("rewardpts");
+					}
+				}
+			} catch (SQLException e) {
+				System.err.println("Could not get member");
+				System.exit(-1);
+			}
+			
 			
 		}
+		/*
 		//The .get() methods on our classes all function the same way. We find the specific tuple 
 				//in the database by searching for the primary key, and then we update a blank object (of that class)
 				//by replacing its current attributes with the attributes from the tuple we searched for
@@ -683,7 +829,7 @@ public class Prog04 {
 			this.phoneNum=answer.getString("phoneNum");
 			this.rewardPts=answer.getInt("rewardpts");
 			
-		}
+		}*/
 		public void addMember(Statement stmt){
 			try {
 				stmt.executeQuery("insert into yungbluth.Member values(yungbluth.auto_Member.nextval" +
@@ -691,6 +837,16 @@ public class Prog04 {
 						"', '" + address + "', '" + phoneNum + "', " + rewardPts + ")");
 			} catch (SQLException e) {
 				System.err.println("Could not create Member");
+				System.exit(-1);
+			}
+		}
+		
+		public void updateMember(Statement stmt, int memID){
+			try {
+				stmt.executeQuery("update yungbluth.Member SET firstname = '" + this.firstName + "', lastname= '" + this.lastName + "', birthdate= '" +
+						this.birthDate + "', address='" + this.address + "', phonenum='" + this.phoneNum + "', rewardpts=" + this.rewardPts + " where memID = " + memID);
+			} catch (SQLException e) {
+				System.err.println("Could not update Member");
 				System.exit(-1);
 			}
 		}
@@ -720,14 +876,34 @@ public class Prog04 {
 				//in the database by searching for the primary key, and then we update a blank object (of that class)
 				//by replacing its current attributes with the attributes from the tuple we searched for
 		public void getProduct(Connection dbconn, int productID) {
-			String query="SELECT * FROM yungbluth.Product WHERE productID = "+productID;
-			Statement stmt=dbconn.createStatement();
-			ResultSet answer=stmt.executeQuery(query);
-			this.name=answer.getString("name");
-			this.retailPrice=answer.getInt("retailPrice");
-			this.category=answer.getString("category");
-			this.memDiscount=answer.getInt("memDiscount");
-			this.stockInfo=answer.getInt("stockInfo");
+			try {
+				String query="SELECT name,retailprice,category,memdiscount,stockinfo FROM yungbluth.Product WHERE productID = "+productID;
+				Statement stmt=dbconn.createStatement();
+				ResultSet answer=stmt.executeQuery(query);
+				if(answer!=null) {
+					while(answer.next()) {
+						this.name=answer.getString("name");
+						this.retailPrice=answer.getInt("retailPrice");
+						this.category=answer.getString("category");
+						this.memDiscount=answer.getInt("memDiscount");
+						this.stockInfo=answer.getInt("stockInfo");
+					}
+				}
+			} catch (SQLException e) {
+				System.err.println("Could not get product");
+				System.exit(-1);
+			}
+			
+		}
+		
+		public void updateProduct(Statement stmt, int prodID){
+			try {
+				stmt.executeQuery("update yungbluth.Product SET name = '" + this.name + "', category= '" + this.category + "', retailPrice= " +
+						this.retailPrice + ",memDiscount=" + this.memDiscount + ",stockinfo=" + this.stockInfo + " where productID = " + prodID);
+			} catch (SQLException e) {
+				System.err.println("Could not update supplier");
+				System.exit(-1);
+			}
 		}
 		
 		public void addProduct(Statement stmt) {
@@ -766,13 +942,20 @@ public class Prog04 {
 				//in the database by searching for the primary key, and then we update a blank object (of that class)
 				//by replacing its current attributes with the attributes from the tuple we searched for
 		public void getSalesRecord(Connection dbconn, int saleID) {
-			String query="SELECT * FROM yungbluth.SalesRecord WHERE saleID = "+saleID;
-			Statement stmt=dbconn.createStatement();
-			ResultSet answer=stmt.executeQuery(query);
-			this.saleDate=answer.getString("saleDate");
-			this.paymentMethod=answer.getString("paymentMethod");
-			this.totalPrice=answer.getInt("totalPrice");
-			this.memID=answer.getInt("memID");
+			try {
+				String query="SELECT * FROM yungbluth.SalesRecord WHERE saleID = "+saleID;
+				Statement stmt=dbconn.createStatement();
+				ResultSet answer=stmt.executeQuery(query);
+				this.saleDate=answer.getString("saleDate");
+				this.paymentMethod=answer.getString("paymentMethod");
+				this.totalPrice=answer.getInt("totalPrice");
+				this.memID=answer.getInt("memID");
+			} catch (SQLException e) {
+				System.err.println("*** SQLException:  "
+			            + "Could not fetch query results.");
+			    System.exit(-1);
+			}
+			
 		}
 		
 		public void addSalesRecord(Statement stmt) {
@@ -811,13 +994,19 @@ public class Prog04 {
 				//in the database by searching for the primary key, and then we update a blank object (of that class)
 				//by replacing its current attributes with the attributes from the tuple we searched for
 		public void getSubRecord(Connection dbconn, int subSaleID) {
-			String query="SELECT * FROM yungbluth.SubRecord WHERE subSaleID = "+subSaleID;
-			Statement stmt=dbconn.createStatement();
-			ResultSet answer=stmt.executeQuery(query);
-			this.productID=answer.getInt("productID");
-			this.saleID=answer.getInt("saleID");
-			this.price=answer.getInt("price");
-			this.amount=answer.getInt("amount");			
+			try {
+				String query="SELECT * FROM yungbluth.SubRecord WHERE subSaleID = "+subSaleID;
+				Statement stmt=dbconn.createStatement();
+				ResultSet answer=stmt.executeQuery(query);
+				this.productID=answer.getInt("productID");
+				this.saleID=answer.getInt("saleID");
+				this.price=answer.getInt("price");
+				this.amount=answer.getInt("amount");
+			} catch (SQLException e) {
+				System.err.println("*** SQLException:  "
+			            + "Could not fetch query results.");
+			    System.exit(-1);
+			}
 			
 		}
 		
@@ -851,14 +1040,34 @@ public class Prog04 {
 		//The .get() methods on our classes all function the same way. We find the specific tuple 
 				//in the database by searching for the primary key, and then we update a blank object (of that class)
 				//by replacing its current attributes with the attributes from the tuple we searched for
-		public void getSupplier(Connection dbconn, int supplierID) {
-			String query="SELECT * FROM yungbluth.Supplier WHERE supplierID = "+supplierID;
-			Statement stmt=dbconn.createStatement();
-			ResultSet answer=stmt.executeQuery(query);
-			this.name=answer.getString("name");
-			this.address=answer.getString("address");
-			this.contactPerson=answer.getString("contactPerson");
+		public void getSupplierByID(Connection dbconn, int supplierID) {
+			try {
+				String query="SELECT name,address,contactperson FROM yungbluth.Supplier WHERE supplierID = "+supplierID;
+				Statement stmt=dbconn.createStatement();
+				ResultSet answer=stmt.executeQuery(query);
+				if(answer!=null) {
+					while(answer.next()) {
+						this.name=answer.getString("name");
+						this.address=answer.getString("address");
+						this.contactPerson=answer.getString("contactPerson");
+					}
+				}
+			} catch (SQLException e) {
+				System.err.println("Could not get supplier");
+				System.exit(-1);
+			}
 		}
+		
+		public void updateSupplier(Statement stmt, int supplierID){
+			try {
+				stmt.executeQuery("update yungbluth.Supplier SET name = '" + this.name + "', address= '" + this.address + "', contactperson= '" +
+						this.contactPerson + "' where supplierID = " + supplierID);
+			} catch (SQLException e) {
+				System.err.println("Could not update supplier");
+				System.exit(-1);
+			}
+		}
+		
 		
 		public void addSupplier(Statement stmt) {
 			try {
@@ -894,13 +1103,19 @@ public class Prog04 {
 				//in the database by searching for the primary key, and then we update a blank object (of that class)
 				//by replacing its current attributes with the attributes from the tuple we searched for
 		public void getSupplyRecord(Connection dbconn, int supplierID, int productID) {
-			String query="SELECT * FROM yungbluth.SupplyRecord WHERE supplierID = "+supplierID+" AND productID = "+productID;
-			Statement stmt=dbconn.createStatement();
-			ResultSet answer=stmt.executeQuery(query);
-			this.productID=answer.getInt("productID");
-			this.incomingDate=answer.getString("incomingDate");
-			this.purchasePrice=answer.getInt("purchasePrice");
-			this.amount=answer.getInt("amount");
+			try {
+				String query="SELECT * FROM yungbluth.SupplyRecord WHERE supplierID = "+supplierID+" AND productID = "+productID;
+				Statement stmt=dbconn.createStatement();
+				ResultSet answer=stmt.executeQuery(query);
+				this.productID=answer.getInt("productID");
+				this.incomingDate=answer.getString("incomingDate");
+				this.purchasePrice=answer.getInt("purchasePrice");
+				this.amount=answer.getInt("amount");
+			} catch (SQLException e) {
+				System.err.println("*** SQLException:  "
+			            + "Could not fetch query results.");
+			    System.exit(-1);
+			}
 			
 		}
 		
