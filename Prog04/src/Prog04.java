@@ -806,9 +806,6 @@ public class Prog04 {
 		//push current info of employee back to the table if called
 		public void addEmployee(Statement stmt) {
 			try {
-				System.out.println("insert into yungbluth.Employee values(yungbluth.auto_Employee.nextval" +
-						", '" + firstName + "', '" + lastName + "', '" + gender +
-						"', '" + address + "', '" + phoneNum + "', '" + group + "', " + salary + ")");
 				stmt.executeQuery("insert into yungbluth.Employee values(yungbluth.auto_Employee.nextval" +
 						", '" + firstName + "', '" + lastName + "', '" + gender +
 						"', '" + address + "', '" + phoneNum + "', '" + group + "', " + salary + ")");
@@ -820,7 +817,6 @@ public class Prog04 {
 		
 		public void updateEmployee(Statement stmt, int empID){
 			try {
-				System.out.println("update yungbluth.Employee SET firstname = '" + this.firstName + "', lastname= '" + this.lastName + "', gender= '" +this.gender + "', address='" + this.address + "', phonenum='" + this.phoneNum + "', empgroup='" + this.group + "', salary=" + this.salary + " where empID = " + empID);
 				stmt.executeQuery("update yungbluth.Employee SET firstname = '" + this.firstName + "', lastname= '" + this.lastName + "', gender= '" +
 						this.gender + "', address='" + this.address + "', phonenum='" + this.phoneNum + "', empgroup='" + this.group + "', salary=" + this.salary + " where empID = " + empID);
 			} catch (SQLException e) {
@@ -1104,9 +1100,6 @@ public class Prog04 {
 		
 		public void addSubRecord(Statement stmt) {
 			try {
-				System.out.println("insert into yungbluth.SubRecord values(yungbluth.auto_SubRecord.nextval" +
-						", " + productID + ", " + saleID + ", " + price +
-						", " + amount + ")");
 				stmt.executeQuery("insert into yungbluth.SubRecord values(yungbluth.auto_SubRecord.nextval" +
 						", " + productID + ", " + saleID + ", " + price +
 						", " + amount + ")");
