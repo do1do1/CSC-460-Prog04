@@ -592,8 +592,9 @@ public class Prog04 {
 			
 		}
 		
-		//meant to grab an Employee record in the form of an object
-		//maybe we write setters to modify and then use updateEmployee to push it back?
+		//The .get() methods on our classes all function the same way. We find the specific tuple 
+		//in the database by searching for the primary key, and then we update a blank object (of that class)
+		//by replacing its current attributes with the attributes from the tuple we searched for
 		public void getEmployee(Connection dbconn, int empID) { 
 			String query="SELECT * FROM yungbluth.Member WHERE memID = "+id;
 			Statement stmt=dbconn.createStatement();
@@ -653,6 +654,9 @@ public class Prog04 {
 			
 		}
 		
+		//The .get() methods on our classes all function the same way. We find the specific tuple 
+				//in the database by searching for the primary key, and then we update a blank object (of that class)
+				//by replacing its current attributes with the attributes from the tuple we searched for
 		public void getMemberByID(Connection dbconn, int id) {
 			String query="SELECT * FROM yungbluth.Member WHERE memID = "+id;
 			Statement stmt=dbconn.createStatement();
@@ -665,6 +669,9 @@ public class Prog04 {
 			this.rewardPts=answer.getInt("rewardpts");
 			
 		}
+		//The .get() methods on our classes all function the same way. We find the specific tuple 
+				//in the database by searching for the primary key, and then we update a blank object (of that class)
+				//by replacing its current attributes with the attributes from the tuple we searched for
 		public void getMemberByPhone(Connection dbconn, String phone) {
 			String query="SELECT * FROM yungbluth.Member WHERE phoneNum = "+phone;
 			Statement stmt=dbconn.createStatement();
@@ -709,7 +716,9 @@ public class Prog04 {
 			this.memDiscount = memDiscount;
 			this.stockInfo = stockInfo;
 		}
-		
+		//The .get() methods on our classes all function the same way. We find the specific tuple 
+				//in the database by searching for the primary key, and then we update a blank object (of that class)
+				//by replacing its current attributes with the attributes from the tuple we searched for
 		public void getProduct(Connection dbconn, int productID) {
 			String query="SELECT * FROM yungbluth.Product WHERE productID = "+productID;
 			Statement stmt=dbconn.createStatement();
@@ -753,7 +762,9 @@ public class Prog04 {
 			this.memID = memID;
 			
 		}
-		
+		//The .get() methods on our classes all function the same way. We find the specific tuple 
+				//in the database by searching for the primary key, and then we update a blank object (of that class)
+				//by replacing its current attributes with the attributes from the tuple we searched for
 		public void getSalesRecord(Connection dbconn, int saleID) {
 			String query="SELECT * FROM yungbluth.SalesRecord WHERE saleID = "+saleID;
 			Statement stmt=dbconn.createStatement();
@@ -796,7 +807,9 @@ public class Prog04 {
 			this.amount = amount;
 			
 		}
-		
+		//The .get() methods on our classes all function the same way. We find the specific tuple 
+				//in the database by searching for the primary key, and then we update a blank object (of that class)
+				//by replacing its current attributes with the attributes from the tuple we searched for
 		public void getSubRecord(Connection dbconn, int subSaleID) {
 			String query="SELECT * FROM yungbluth.SubRecord WHERE subSaleID = "+subSaleID;
 			Statement stmt=dbconn.createStatement();
@@ -835,7 +848,9 @@ public class Prog04 {
 			this.contactPerson = contactPerson;
 			
 		}
-		
+		//The .get() methods on our classes all function the same way. We find the specific tuple 
+				//in the database by searching for the primary key, and then we update a blank object (of that class)
+				//by replacing its current attributes with the attributes from the tuple we searched for
 		public void getSupplier(Connection dbconn, int supplierID) {
 			String query="SELECT * FROM yungbluth.Supplier WHERE supplierID = "+supplierID;
 			Statement stmt=dbconn.createStatement();
@@ -875,6 +890,9 @@ public class Prog04 {
 			this.amount = amount;
 			
 		}
+		//The .get() methods on our classes all function the same way. We find the specific tuple 
+				//in the database by searching for the primary key, and then we update a blank object (of that class)
+				//by replacing its current attributes with the attributes from the tuple we searched for
 		public void getSupplyRecord(Connection dbconn, int supplierID, int productID) {
 			String query="SELECT * FROM yungbluth.SupplyRecord WHERE supplierID = "+supplierID+" AND productID = "+productID;
 			Statement stmt=dbconn.createStatement();
