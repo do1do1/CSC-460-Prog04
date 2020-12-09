@@ -512,10 +512,35 @@ public class Prog04 {
 						
 						
 					} else if(line.equals("update")) { //UPDATE SALESRECORD
-						
-					} else if(line.equals("delete")) { //DELETE SALESRECORD
-						
-					}
+						SalesRecord salesRecord = new SalesRecord();
+						Integer salesID;
+						System.out.print("Sale ID: ");
+						salesID = Integer.valueOf(input.nextLine());
+						salesRecord.getSalesRecord(dbconn, salesID);
+						System.out.print("Update SalesDate to: (press enter to not) ");
+						String userInput;
+						userInput = input.nextLine();
+						if(!userInput.isEmpty()) {
+							salesRecord.saleDate = userInput;
+						}
+						System.out.print("Update Payment Method to: (press enter to not) ");
+						userInput = input.nextLine();
+						if(!userInput.isEmpty()) {
+							salesRecord.paymentMethod = userInput;
+						}
+						System.out.print("Update Total Price to: (press enter to not) ");
+						userInput = input.nextLine();
+						if(!userInput.isEmpty()) {
+							salesRecord.totalPrice = Integer.parseInt(userInput);
+						}
+						System.out.print("Update Member ID to: (press enter to not) ");
+						userInput = input.nextLine();
+						if(!userInput.isEmpty()) {
+							salesRecord.memID = Integer.parseInt(userInput);
+						}
+						salesRecord.updateSalesRecord(stmt, salesID);
+						System.out.println();
+					} 
 					
 				} else if(line.equals("subrecord")) { //SUBRECORD
 					
@@ -530,12 +555,53 @@ public class Prog04 {
 					}
 					
 					if(line.equals("add")) { //ADD SUBRECORD
+						Integer productID;
+						Integer saleID;
+						Integer price;
+						Integer amount;
+						
+						System.out.print("Product ID: ");
+						productID = Integer.parseInt(input.nextLine());
+						System.out.print("Sale ID: ");
+						saleID = Integer.parseInt(input.nextLine());
+						System.out.print("Price: ");
+						price = Integer.valueOf(input.nextLine());
+						System.out.print("Amount: ");
+						amount = Integer.valueOf(input.nextLine());
+						
+						SubRecord subRec = new SubRecord(productID,saleID,price,amount);
+						subRec.addSubRecord(stmt);
+						
+						SalesRecord saleRec = new SalesRecord();
+						
+						saleRec.getSalesRecord(dbconn, subRec.saleID);
+						Product prod = new Product();
+						prod.getProduct(dbconn, productID);
+						
+						saleRec.totalPrice += (subRec.price - prod.memDiscount)*subRec.amount;
+						saleRec.updateSalesRecord(stmt, subRec.saleID);
 						
 					} else if(line.equals("update")) { //UPDATE SUBRECORD
+						SubRecord subRec = new SubRecord();
+						Integer subID;
+						System.out.print("Sale ID: ");
+						subID = Integer.valueOf(input.nextLine());
+						subRec.getSubRecord(dbconn, subID);
+						System.out.print("Update Price to: (press enter to not) ");
+						String userInput;
+						userInput = input.nextLine();
+						if(!userInput.isEmpty()) {
+							subRec.price = Integer.parseInt(userInput);
+						}
+						System.out.print("Update Amount to: (press enter to not) ");
+						userInput = input.nextLine();
+						if(!userInput.isEmpty()) {
+							subRec.amount = Integer.parseInt(userInput);
+						}
 						
-					} else if(line.equals("delete")) { //DELETE SUBRECORD
-						
-					}
+						subRec.updateSubRecord(stmt, subID);
+						System.out.println();
+					} 
 
 				}
 				
@@ -943,19 +1009,33 @@ public class Prog04 {
 				//by replacing its current attributes with the attributes from the tuple we searched for
 		public void getSalesRecord(Connection dbconn, int saleID) {
 			try {
-				String query="SELECT * FROM yungbluth.SalesRecord WHERE saleID = "+saleID;
+				String query="SELECT saledate,paymentmethod,totalprice,memid FROM yungbluth.salerecord WHERE saleID = "+saleID;
 				Statement stmt=dbconn.createStatement();
 				ResultSet answer=stmt.executeQuery(query);
-				this.saleDate=answer.getString("saleDate");
-				this.paymentMethod=answer.getString("paymentMethod");
-				this.totalPrice=answer.getInt("totalPrice");
-				this.memID=answer.getInt("memID");
+				if(answer!=null) {
+					while(answer.next()) {
+						this.saleDate=answer.getString("saleDate");
+						this.paymentMethod=answer.getString("paymentMethod");
+						this.totalPrice=answer.getInt("totalPrice");
+						this.memID=answer.getInt("memID");
+					}
+				}
 			} catch (SQLException e) {
-				System.err.println("*** SQLException:  "
-			            + "Could not fetch query results.");
-			    System.exit(-1);
+				System.err.println("Could not get supplier");
+				System.exit(-1);
 			}
 			
+		}
+		
+		
+		public void updateSalesRecord(Statement stmt, int salesID){
+			try {
+				stmt.executeQuery("update yungbluth.salerecord SET saledate = '" + this.saleDate + "', paymentmethod= '" + this.paymentMethod + "', totalprice= " +
+						this.totalPrice + ", memid = " + this.memID + " where saleID = " + salesID);
+			} catch (SQLException e) {
+				System.err.println("Could not update salerecord");
+				System.exit(-1);
+			}
 		}
 		
 		public void addSalesRecord(Statement stmt) {
@@ -995,23 +1075,38 @@ public class Prog04 {
 				//by replacing its current attributes with the attributes from the tuple we searched for
 		public void getSubRecord(Connection dbconn, int subSaleID) {
 			try {
-				String query="SELECT * FROM yungbluth.SubRecord WHERE subSaleID = "+subSaleID;
+				String query="SELECT productid,saleid,price,amount FROM yungbluth.subrecord WHERE subsaleID = "+subSaleID;
 				Statement stmt=dbconn.createStatement();
 				ResultSet answer=stmt.executeQuery(query);
-				this.productID=answer.getInt("productID");
-				this.saleID=answer.getInt("saleID");
-				this.price=answer.getInt("price");
-				this.amount=answer.getInt("amount");
+				if(answer!=null) {
+					while(answer.next()) {
+						this.productID=answer.getInt("productID");
+						this.saleID=answer.getInt("saleID");
+						this.price=answer.getInt("price");
+						this.amount=answer.getInt("amount");
+					}
+				}
 			} catch (SQLException e) {
-				System.err.println("*** SQLException:  "
-			            + "Could not fetch query results.");
-			    System.exit(-1);
+				System.err.println("Could not get supplier");
+				System.exit(-1);
 			}
 			
 		}
 		
+		public void updateSubRecord(Statement stmt, int subSaleID){
+			try {
+				stmt.executeQuery("update yungbluth.subrecord SET price = " + this.price + ", amount= " + this.amount + " where subsaleID = " + subSaleID);
+			} catch (SQLException e) {
+				System.err.println("Could not update subrecord");
+				System.exit(-1);
+			}
+		}
+		
 		public void addSubRecord(Statement stmt) {
 			try {
+				System.out.println("insert into yungbluth.SubRecord values(yungbluth.auto_SubRecord.nextval" +
+						", " + productID + ", " + saleID + ", " + price +
+						", " + amount + ")");
 				stmt.executeQuery("insert into yungbluth.SubRecord values(yungbluth.auto_SubRecord.nextval" +
 						", " + productID + ", " + saleID + ", " + price +
 						", " + amount + ")");
