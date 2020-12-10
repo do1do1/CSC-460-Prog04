@@ -273,12 +273,10 @@ public class Prog04 {
 						System.out.print("Address: ");
 						address = input.nextLine();
 						System.out.print("Phone Number: ");
-						//add regex?
 						phoneNum = input.nextLine();
 						System.out.print("Group: ");
 						group = input.nextLine();
 						System.out.print("Salary: ");
-						//add check for int here.
 						salary = Integer.valueOf(input.nextLine());
 						
 						//add employee
@@ -372,15 +370,12 @@ public class Prog04 {
 						System.out.print("Name: ");
 						name = input.nextLine();
 						System.out.print("Retail Price: ");
-						//add int checks
 						retailPrice = Integer.valueOf(input.nextLine());
 						System.out.print("Category: ");
 						category = input.nextLine();
 						System.out.print("Member discount: ");
-						//add int checks
 						memDiscount = Integer.valueOf(input.nextLine());
 						System.out.print("Stock info: ");
-						//add int checks
 						stockInfo = Integer.valueOf(input.nextLine());
 						
 						//add product
@@ -442,7 +437,6 @@ public class Prog04 {
 							stmt.executeQuery("delete from yungbluth.SupplyRecord WHERE productID = " + productID);
 							stmt.executeQuery("delete from yungbluth.SubRecord WHERE productID = " + productID);
 							stmt.executeQuery("delete from yungbluth.Product where productid = " + productID);
-							//ADD REMOVAL OF FOREIGN KEYS
 						} catch (SQLException e) {
 							System.err.println("Could not delete Product");
 							System.exit(-1);
@@ -516,9 +510,11 @@ public class Prog04 {
 						
 					} else if(line.equals("delete")) { //DELETE SUPPLIER
 						
+						//prompt for supplier ID
 						Integer supplierID;
 						System.out.print("Supplier ID: ");
 						supplierID = Integer.valueOf(input.nextLine());
+						
 						//delete children that are foreign keys to the given primary key of supply
 						//and record associated with the key
 						try {
