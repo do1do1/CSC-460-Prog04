@@ -6,6 +6,27 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Scanner;
 
+/*=============================================================================
+|   Assignment:  Program #4:  Prog04.java
+|       Author:  Hunter Brick, Justin Do, Sophia Wang, Matthew Yungbluth
+|       Grader:  Unsure
+|
+|       Course:  CSC460
+|   Instructor:  L. McCann
+|     Due Date:  12/8/2020 12:30 PM
+|
+|  Description:  Program connects to a database and either add, updates, or deletes
+				 a requested records off a requested table based off user response.
+				 It also gives back the answer/records to "Get member (by Member ID or phone number)",
+				 "Most profitable product", and "Top 10 members with highest spending".
+|				 
+|
+|     Language:  Java 8
+| Ex. Packages:  N/A
+|                
+| Deficiencies: N/A
+*===========================================================================*/
+
 public class Prog04 {
 	public static void main(String[] args) {
 		final String oracleURL =   "jdbc:oracle:thin:@aloe.cs.arizona.edu:1521:oracle";
@@ -57,6 +78,8 @@ public class Prog04 {
 
 		}
 		
+		
+		
 		//Program "menu" with it's functionalities
 		System.out.println("Welcome. Select A, B, C, D, or E. Anything else to exit.");
 		System.out.println("A for Modify Member, Employee, Product, or Supplier.");
@@ -64,6 +87,9 @@ public class Prog04 {
 		System.out.println("C for Get Member.");
 		System.out.println("D for Most profitable product.");
 		System.out.println("E for Top 10 Members with the highest spending.");
+		
+		
+		//prompts user for a choice for the above menu
 		Scanner input = new Scanner(System.in); //takes in user input
 		System.out.print("Enter choice: ");
 		String line = input.nextLine();
@@ -74,7 +100,7 @@ public class Prog04 {
 		Statement stmt = null;
 		ResultSet answer = null;
 		
-		//while input is a, b, c, d, or e for the query
+		//while input is a, b, c, d, or e as the menu response
 		while(line.equals("a") || line.equals("b") || line.equals("c") || line.equals("d") || line.equals("e")) {
 			
 			
@@ -87,10 +113,12 @@ public class Prog04 {
 					System.err.println("Unable to create statement.");
 					System.exit(-1);
 				}
+				
+				//prompt user to select which table they'll be modifying
 				System.out.print("Member, Employee, Product, or Supplier? ");
 				line = input.nextLine().toLowerCase();
 				
-				//while it's not a proper response, 
+				//while it's not a proper response 
 				while(!line.equals("member") && !line.equals("employee") && 
 					  !line.equals("product") && !line.equals("supplier") ){
 					
@@ -106,6 +134,7 @@ public class Prog04 {
 				//this corrects it
 				if(line.equals("member")) { //MEMBER
 					
+					//prompts user for type of query to issue
 					System.out.println("Add, update, or delete?");
 					line = input.nextLine().toLowerCase();
 					
@@ -118,6 +147,8 @@ public class Prog04 {
 					
 					
 					if(line.equals("add")) { //ADD MEMBER
+						
+						//prompt for every attribute of member
 						String firstName;
 						String lastName;
 						String birthDate;
@@ -129,31 +160,34 @@ public class Prog04 {
 						System.out.print("Last Name: ");
 						lastName = input.nextLine();
 						System.out.print("Birth date: ");
-						//add regex?
 						birthDate = input.nextLine();
 						System.out.print("Address: ");
 						address = input.nextLine();
 						System.out.print("Phone Number: ");
-						//add regex?
 						phoneNum = input.nextLine();
 						System.out.print("Reward Points: ");
-						//add check for int here.
 						rewardPts = Integer.valueOf(input.nextLine());
 						
+						//add member to table
 						Member member = new Member(firstName, lastName, birthDate, address, phoneNum, rewardPts);
 						member.addMember(stmt);
 						
 						
 					} else if(line.equals("update")) { //UPDATE MEMBER
 						
+						//prompts a response for each attribute
+						//if it's not to be changed, no response is given
 						Member member = new Member();
 						Integer memID;
 						System.out.print("Member ID: ");
 						memID = Integer.valueOf(input.nextLine());
+						
+						//get member by id
 						member.getMemberByID(dbconn, memID);
 						System.out.print("Update First Name to: (press enter to not) ");
 						String userInput;
 						userInput = input.nextLine();
+						
 						if(!userInput.isEmpty()) {
 							member.firstName = userInput;
 						}
@@ -182,19 +216,24 @@ public class Prog04 {
 						if(!userInput.isEmpty()) {
 							member.rewardPts = Integer.parseInt(userInput);
 						}
-						//use setters here to change it and then call update function
+						
+						//updates member
 						member.updateMember(stmt,memID);
 						System.out.println();
 						
 					} else if(line.equals("delete")) { //DELETE MEMBER
+						
+						//get member ID
 						Integer memID;
 						System.out.print("Member ID: ");
 						memID = Integer.valueOf(input.nextLine());
+						
+						//delete children that are foreign keys to the given primary key of member
+						//and record associated with the key
 						try {
 							stmt.executeQuery("delete from yungbluth.SubRecord sub WHERE sub.subSaleID = (SELECT sub.subSaleID FROM yungbluth.SubRecord sub JOIN yungbluth.SaleRecord sale on sub.saleID = sale.saleID where memid = " + memID.toString() + ")");
 							stmt.executeQuery("delete from yungbluth.SaleRecord where memid = " + memID);
 							stmt.executeQuery("delete from yungbluth.Member where memid = " + memID);
-							//ADD REMOVAL OF FOREIGN KEYS
 						} catch (SQLException e) {
 							System.err.println("Could not delete Member");
 							System.exit(-1);
@@ -203,6 +242,7 @@ public class Prog04 {
 					
 				} else if(line.equals("employee")) { //EMPLOYEE
 					
+					//prompt query type for employee
 					System.out.println("Add, update, or delete?");
 					line = input.nextLine().toLowerCase();
 					
@@ -216,6 +256,7 @@ public class Prog04 {
 					
 					if(line.equals("add")) { //ADD EMPLOYEE
 						
+						//prompt for every attribute of employee
 						String firstName;
 						String lastName;
 						String gender;
@@ -240,18 +281,25 @@ public class Prog04 {
 						//add check for int here.
 						salary = Integer.valueOf(input.nextLine());
 						
+						//add employee
 						Employee employee = new Employee(firstName, lastName, gender, address, phoneNum, group, salary);
 						employee.addEmployee(stmt);
 						
 					} else if(line.equals("update")) { //UPDATE EMPLOYEE
+						
+						//prompt for every attribute of employee, enter nothing to not change it
 						Employee emp = new Employee();
 						Integer empID;
 						System.out.print("Employee ID: ");
 						empID = Integer.valueOf(input.nextLine());
+						
+						//get employee by employee id
 						emp.getEmployeeByID(dbconn, empID);
 						System.out.print("Update First Name to: (press enter to not) ");
 						String userInput;
 						userInput = input.nextLine();
+						
+						
 						if(!userInput.isEmpty()) {
 							emp.firstName = userInput;
 						}
@@ -276,13 +324,18 @@ public class Prog04 {
 							emp.salary = Integer.parseInt(userInput);
 						}
 						
+						//update employee
 						emp.updateEmployee(stmt,empID);
 						System.out.println();
+						
 					} else if(line.equals("delete")) { //DELETE EMPLOYEE
 						
+						//prompt for employee ID
 						Integer employeeID;
 						System.out.print("Employee ID: ");
 						employeeID = Integer.valueOf(input.nextLine());
+						
+						//delete employee record with employee ID
 						try {
 							stmt.executeQuery("delete from yungbluth.Employee where empid = " + employeeID);
 						} catch (SQLException e) {
@@ -294,6 +347,7 @@ public class Prog04 {
 					
 				} else if(line.equals("product")) { //PRODUCT
 					
+					//prompt for query type
 					System.out.println("Add, update, or delete?");
 					line = input.nextLine().toLowerCase();
 					
@@ -304,8 +358,10 @@ public class Prog04 {
 						line = input.nextLine().toLowerCase();
 					}
 					
+					
 					if(line.equals("add")) { // ADD PRODUCT
 						
+						//prompt for product attributes
 						String name;
 						Integer retailPrice;
 						String category;
@@ -327,18 +383,24 @@ public class Prog04 {
 						//add int checks
 						stockInfo = Integer.valueOf(input.nextLine());
 						
+						//add product
 						Product product = new Product(name, retailPrice, category, memDiscount, stockInfo);
 						product.addProduct(stmt);
 						
 					} else if(line.equals("update")) { //UPDATE PRODUCT
+						
+						//prompt for product attribute, enter nothing to not change it
 						Product prod = new Product();
 						Integer prodID;
 						System.out.print("Product ID: ");
 						prodID = Integer.valueOf(input.nextLine());
+						
+						//get product by product id
 						prod.getProduct(dbconn, prodID);
 						System.out.print("Update Name to: (press enter to not) ");
 						String userInput;
 						userInput = input.nextLine();
+						
 						if(!userInput.isEmpty()) {
 							prod.name = userInput;
 						}
@@ -363,13 +425,19 @@ public class Prog04 {
 							prod.stockInfo = Integer.parseInt(userInput);
 						}
 						
+						//update product
 						prod.updateProduct(stmt,prodID);
 						System.out.println();
+						
 					} else if(line.equals("delete")) { //DELETE PRODUCT
 						
+						//prompt for product ID
 						Integer productID;
 						System.out.print("Product ID: ");
 						productID = Integer.valueOf(input.nextLine());
+						
+						//delete children that are foreign keys to the given primary key of product
+						//and record associated with the key
 						try {
 							stmt.executeQuery("delete from yungbluth.SupplyRecord WHERE productID = " + productID);
 							stmt.executeQuery("delete from yungbluth.SubRecord WHERE productID = " + productID);
@@ -384,6 +452,7 @@ public class Prog04 {
 					
 				} else if(line.equals("supplier")) { //SUPPLIER
 					
+					//prompt query type
 					System.out.println("Add, update, or delete?");
 					line = input.nextLine().toLowerCase();
 					
@@ -396,6 +465,7 @@ public class Prog04 {
 					
 					if(line.equals("add")) { //ADD SUPPLIER
 						
+						//prompt for attributes of supplier
 						String name;
 						String address;
 						String contactPerson;
@@ -407,19 +477,25 @@ public class Prog04 {
 						System.out.print("Contact Person: ");
 						contactPerson = input.nextLine();
 						
+						//add supplier
 						Supplier supplier = new Supplier(name, address, contactPerson);
 						supplier.addSupplier(stmt);
 						
 						
 					} else if(line.equals("update")) { //UPDATE SUPPLIER
+						
+						//prompt for attributes of supplier, enter nothing to not change
 						Supplier supplier = new Supplier();
 						Integer supplierID;
 						System.out.print("Supplier ID: ");
 						supplierID = Integer.valueOf(input.nextLine());
+						
+						//get supplier by supplier id
 						supplier.getSupplierByID(dbconn, supplierID);
 						System.out.print("Update Name to: (press enter to not) ");
 						String userInput;
 						userInput = input.nextLine();
+						
 						if(!userInput.isEmpty()) {
 							supplier.name = userInput;
 						}
@@ -434,13 +510,17 @@ public class Prog04 {
 							supplier.contactPerson = userInput;
 						}
 						
+						//update supplier
 						supplier.updateSupplier(stmt,supplierID);
 						System.out.println();
+						
 					} else if(line.equals("delete")) { //DELETE SUPPLIER
 						
 						Integer supplierID;
 						System.out.print("Supplier ID: ");
 						supplierID = Integer.valueOf(input.nextLine());
+						//delete children that are foreign keys to the given primary key of supply
+						//and record associated with the key
 						try {
 							stmt.executeQuery("delete from yungbluth.SupplyRecord where supplierid = " + supplierID);
 							stmt.executeQuery("delete from yungbluth.Supplier where supplierid = " + supplierID);
@@ -465,6 +545,7 @@ public class Prog04 {
 					System.exit(-1);
 				}
 				
+				//prompt for which table
 				System.out.print("SalesRecord or SubRecord? ");
 				line = input.nextLine().toLowerCase();
 				
@@ -478,6 +559,7 @@ public class Prog04 {
 				
 				if(line.equals("salesrecord")) { //SALESRECORD
 					
+					//prompt for query type
 					System.out.println("Add, update, or delete?");
 					line = input.nextLine().toLowerCase();
 					
@@ -490,6 +572,7 @@ public class Prog04 {
 					
 					if(line.equals("add")) { //ADD SALESRECORD
 						
+						//prompt for salesrecord attribute
 						String saleDate;
 						String paymentMethod;
 						Integer totalPrice;
@@ -500,22 +583,25 @@ public class Prog04 {
 						System.out.print("Payment Method: ");
 						paymentMethod = input.nextLine();
 						System.out.print("Total Price: ");
-						//place Integer checks
 						totalPrice = Integer.valueOf(input.nextLine());
 						System.out.print("Member ID: ");
-						//place Integer checks
 						memID = Integer.valueOf(input.nextLine());
 						
+						//add salesrecord
 						SalesRecord salesRecord = new SalesRecord(saleDate, paymentMethod, totalPrice, memID);
 						salesRecord.addSalesRecord(stmt);
 						
 						
 						
 					} else if(line.equals("update")) { //UPDATE SALESRECORD
+						
+						//prompt for attribute of salesrecord, enter nothing to not change it
 						SalesRecord salesRecord = new SalesRecord();
 						Integer salesID;
 						System.out.print("Sale ID: ");
 						salesID = Integer.valueOf(input.nextLine());
+						
+						//get salesrecord based off given input
 						salesRecord.getSalesRecord(dbconn, salesID);
 						System.out.print("Update SalesDate to: (press enter to not) ");
 						String userInput;
@@ -538,12 +624,15 @@ public class Prog04 {
 						if(!userInput.isEmpty()) {
 							salesRecord.memID = Integer.parseInt(userInput);
 						}
+						
+						//update salesrecord
 						salesRecord.updateSalesRecord(stmt, salesID);
 						System.out.println();
 					} 
 					
 				} else if(line.equals("subrecord")) { //SUBRECORD
 					
+					//prompt for query type
 					System.out.println("Add, update, or delete?");
 					line = input.nextLine().toLowerCase();
 					
@@ -555,6 +644,8 @@ public class Prog04 {
 					}
 					
 					if(line.equals("add")) { //ADD SUBRECORD
+						
+						//prompt for subrecord attributes
 						Integer productID;
 						Integer saleID;
 						Integer price;
@@ -569,11 +660,13 @@ public class Prog04 {
 						System.out.print("Amount: ");
 						amount = Integer.valueOf(input.nextLine());
 						
+						//add subrecord
 						SubRecord subRec = new SubRecord(productID,saleID,price,amount);
 						subRec.addSubRecord(stmt);
 						
 						SalesRecord saleRec = new SalesRecord();
 						
+						//change salesrecord total price with this addition
 						saleRec.getSalesRecord(dbconn, subRec.saleID);
 						Product prod = new Product();
 						prod.getProduct(dbconn, productID);
@@ -582,14 +675,19 @@ public class Prog04 {
 						saleRec.updateSalesRecord(stmt, subRec.saleID);
 						
 					} else if(line.equals("update")) { //UPDATE SUBRECORD
+						
+						//prompt for subrecord attribute, enter nothing to not change it
 						SubRecord subRec = new SubRecord();
 						Integer subID;
 						System.out.print("Sale ID: ");
 						subID = Integer.valueOf(input.nextLine());
+						
+						//get subrecord by subrecord id
 						subRec.getSubRecord(dbconn, subID);
 						System.out.print("Update Price to: (press enter to not) ");
 						String userInput;
 						userInput = input.nextLine();
+						
 						if(!userInput.isEmpty()) {
 							subRec.price = Integer.parseInt(userInput);
 						}
@@ -599,6 +697,7 @@ public class Prog04 {
 							subRec.amount = Integer.parseInt(userInput);
 						}
 						
+						//update subrecord
 						subRec.updateSubRecord(stmt, subID);
 						System.out.println();
 					} 
@@ -614,10 +713,13 @@ public class Prog04 {
 					// find member
 					System.out.println("Enter a for getting member by phone number or b for getting member by memID");
 					String userInput = input.nextLine().toLowerCase();
+					//get member by phone number
 					if(userInput.equals("a")) {
 						System.out.println("Enter phone number");
 						userInput = input.nextLine();
 						phoneNumber = userInput;
+						
+					//get member by member ID
 					} else if(userInput.equals("b")) {
 						System.out.println("Enter member ID");
 						userInput = input.nextLine();
@@ -745,10 +847,11 @@ public class Prog04 {
 	
 
 }
-	//classes together for now can separate into files later.
+	//classes are used to have an object form of a record.
+	//all classes can add or update to the db with their assigned attributes
 	//methods that take in the Statement object should use it to either receive from the DB
 	//or send to the DB.
-	//feel free to add methods and arguments to methods that may be needed 
+	
 	class Employee{
 		
 		String firstName;
@@ -759,13 +862,13 @@ public class Prog04 {
 		String group;
 		int salary;
 		
-		//this is for when the employee already exists and we're trying to get them, otherwise use the other one
+		//this is for when the employee already exists
 		public Employee() {
 			
 		}
 		
 		public Employee(String firstName, String lastName, String gender, 
-						String address, String phoneNum, String group, int salary) { // salary may become a decimal?
+						String address, String phoneNum, String group, int salary) { 
 
 			this.firstName = firstName;
 			this.lastName = lastName;
@@ -803,7 +906,7 @@ public class Prog04 {
 			
 		}
 		
-		//push current info of employee back to the table if called
+		//push current info of object to the table if called
 		public void addEmployee(Statement stmt) {
 			try {
 				stmt.executeQuery("insert into yungbluth.Employee values(yungbluth.auto_Employee.nextval" +
@@ -815,6 +918,7 @@ public class Prog04 {
 			}
 		}
 		
+		//updates to table record with the given changes in attributes
 		public void updateEmployee(Statement stmt, int empID){
 			try {
 				stmt.executeQuery("update yungbluth.Employee SET firstname = '" + this.firstName + "', lastname= '" + this.lastName + "', gender= '" +
@@ -852,8 +956,8 @@ public class Prog04 {
 		}
 		
 		//The .get() methods on our classes all function the same way. We find the specific tuple 
-				//in the database by searching for the primary key, and then we update a blank object (of that class)
-				//by replacing its current attributes with the attributes from the tuple we searched for
+		//in the database by searching for the primary key, and then we update a blank object (of that class)
+		//by replacing its current attributes with the attributes from the tuple we searched for
 		public void getMemberByID(Connection dbconn, int id) {
 			try {
 				String query="SELECT firstName, lastName, birthDate, address, phoneNum, rewardpts FROM yungbluth.Member WHERE memID = "+String.valueOf(id);
@@ -876,22 +980,8 @@ public class Prog04 {
 			
 			
 		}
-		/*
-		//The .get() methods on our classes all function the same way. We find the specific tuple 
-				//in the database by searching for the primary key, and then we update a blank object (of that class)
-				//by replacing its current attributes with the attributes from the tuple we searched for
-		public void getMemberByPhone(Connection dbconn, String phone) {
-			String query="SELECT * FROM yungbluth.Member WHERE phoneNum = "+phone;
-			Statement stmt=dbconn.createStatement();
-			ResultSet answer=stmt.executeQuery(query);
-			this.firstName=answer.getString("firstName");
-			this.lastName=answer.getString("lastName");
-			this.birthDate=answer.getString("birthDate");
-			this.address=answer.getString("address");
-			this.phoneNum=answer.getString("phoneNum");
-			this.rewardPts=answer.getInt("rewardpts");
-			
-		}*/
+		
+		//push current info of object to the table if called	
 		public void addMember(Statement stmt){
 			try {
 				stmt.executeQuery("insert into yungbluth.Member values(yungbluth.auto_Member.nextval" +
@@ -903,6 +993,7 @@ public class Prog04 {
 			}
 		}
 		
+		//updates to table record with the given changes in attributes
 		public void updateMember(Statement stmt, int memID){
 			try {
 				stmt.executeQuery("update yungbluth.Member SET firstname = '" + this.firstName + "', lastname= '" + this.lastName + "', birthdate= '" +
@@ -921,6 +1012,7 @@ public class Prog04 {
 		int memDiscount;
 		int stockInfo;
 		
+		//this is for when the product already exists
 		public Product() {
 			
 		}
@@ -935,8 +1027,8 @@ public class Prog04 {
 			this.stockInfo = stockInfo;
 		}
 		//The .get() methods on our classes all function the same way. We find the specific tuple 
-				//in the database by searching for the primary key, and then we update a blank object (of that class)
-				//by replacing its current attributes with the attributes from the tuple we searched for
+		//in the database by searching for the primary key, and then we update a blank object (of that class)
+		//by replacing its current attributes with the attributes from the tuple we searched for
 		public void getProduct(Connection dbconn, int productID) {
 			try {
 				String query="SELECT name,retailprice,category,memdiscount,stockinfo FROM yungbluth.Product WHERE productID = "+productID;
@@ -958,6 +1050,7 @@ public class Prog04 {
 			
 		}
 		
+		//updates to table record with the given changes in attributes
 		public void updateProduct(Statement stmt, int prodID){
 			try {
 				stmt.executeQuery("update yungbluth.Product SET name = '" + this.name + "', category= '" + this.category + "', retailPrice= " +
@@ -968,6 +1061,7 @@ public class Prog04 {
 			}
 		}
 		
+		//push current info of object to the table if called
 		public void addProduct(Statement stmt) {
 			try {
 				stmt.executeQuery("insert into yungbluth.Product values(yungbluth.auto_Product.nextval" +
@@ -987,6 +1081,7 @@ public class Prog04 {
 		int totalPrice;
 		int memID;
 		
+		//this is for when the salesrecord already exists
 		public SalesRecord() {
 			
 		}
@@ -1001,8 +1096,8 @@ public class Prog04 {
 			
 		}
 		//The .get() methods on our classes all function the same way. We find the specific tuple 
-				//in the database by searching for the primary key, and then we update a blank object (of that class)
-				//by replacing its current attributes with the attributes from the tuple we searched for
+		//in the database by searching for the primary key, and then we update a blank object (of that class)
+		//by replacing its current attributes with the attributes from the tuple we searched for
 		public void getSalesRecord(Connection dbconn, int saleID) {
 			try {
 				String query="SELECT saledate,paymentmethod,totalprice,memid FROM yungbluth.salerecord WHERE saleID = "+saleID;
@@ -1023,7 +1118,7 @@ public class Prog04 {
 			
 		}
 		
-		
+		//updates to table record with the given changes in attributes
 		public void updateSalesRecord(Statement stmt, int salesID){
 			try {
 				stmt.executeQuery("update yungbluth.salerecord SET saledate = '" + this.saleDate + "', paymentmethod= '" + this.paymentMethod + "', totalprice= " +
@@ -1034,6 +1129,7 @@ public class Prog04 {
 			}
 		}
 		
+		//push current info of object to the table if called
 		public void addSalesRecord(Statement stmt) {
 			try {
 				stmt.executeQuery("insert into yungbluth.SalesRecord values(yungbluth.auto_SalesRecord.nextval" +
@@ -1053,7 +1149,7 @@ public class Prog04 {
 		int price;
 		int amount;
 		
-		
+		//this is for when the subrecord already exists
 		public SubRecord() {
 			
 		}
@@ -1067,8 +1163,8 @@ public class Prog04 {
 			
 		}
 		//The .get() methods on our classes all function the same way. We find the specific tuple 
-				//in the database by searching for the primary key, and then we update a blank object (of that class)
-				//by replacing its current attributes with the attributes from the tuple we searched for
+		//in the database by searching for the primary key, and then we update a blank object (of that class)
+		//by replacing its current attributes with the attributes from the tuple we searched for
 		public void getSubRecord(Connection dbconn, int subSaleID) {
 			try {
 				String query="SELECT productid,saleid,price,amount FROM yungbluth.subrecord WHERE subsaleID = "+subSaleID;
@@ -1089,6 +1185,7 @@ public class Prog04 {
 			
 		}
 		
+		//updates to table record with the given changes in attributes
 		public void updateSubRecord(Statement stmt, int subSaleID){
 			try {
 				stmt.executeQuery("update yungbluth.subrecord SET price = " + this.price + ", amount= " + this.amount + " where subsaleID = " + subSaleID);
@@ -1098,6 +1195,7 @@ public class Prog04 {
 			}
 		}
 		
+		//push current info of object to the table if called
 		public void addSubRecord(Statement stmt) {
 			try {
 				stmt.executeQuery("insert into yungbluth.SubRecord values(yungbluth.auto_SubRecord.nextval" +
@@ -1115,6 +1213,7 @@ public class Prog04 {
 		String address;
 		String contactPerson;
 		
+		//this is for when the supplier already exists
 		public Supplier() {
 			
 		}
@@ -1126,8 +1225,8 @@ public class Prog04 {
 			
 		}
 		//The .get() methods on our classes all function the same way. We find the specific tuple 
-				//in the database by searching for the primary key, and then we update a blank object (of that class)
-				//by replacing its current attributes with the attributes from the tuple we searched for
+		//in the database by searching for the primary key, and then we update a blank object (of that class)
+		//by replacing its current attributes with the attributes from the tuple we searched for
 		public void getSupplierByID(Connection dbconn, int supplierID) {
 			try {
 				String query="SELECT name,address,contactperson FROM yungbluth.Supplier WHERE supplierID = "+supplierID;
@@ -1146,6 +1245,7 @@ public class Prog04 {
 			}
 		}
 		
+		//updates to table record with the given changes in attributes
 		public void updateSupplier(Statement stmt, int supplierID){
 			try {
 				stmt.executeQuery("update yungbluth.Supplier SET name = '" + this.name + "', address= '" + this.address + "', contactperson= '" +
@@ -1156,7 +1256,7 @@ public class Prog04 {
 			}
 		}
 		
-		
+		//push current info of object to the table if called
 		public void addSupplier(Statement stmt) {
 			try {
 				stmt.executeQuery("insert into yungbluth.Supplier values(yungbluth.auto_Supplier.nextval" +
@@ -1174,6 +1274,7 @@ public class Prog04 {
 		int purchasePrice;
 		int amount;
 		
+		//this is for when the supplyrecord already exists
 		public SupplyRecord() {
 			
 		}
@@ -1188,8 +1289,8 @@ public class Prog04 {
 			
 		}
 		//The .get() methods on our classes all function the same way. We find the specific tuple 
-				//in the database by searching for the primary key, and then we update a blank object (of that class)
-				//by replacing its current attributes with the attributes from the tuple we searched for
+		//in the database by searching for the primary key, and then we update a blank object (of that class)
+		//by replacing its current attributes with the attributes from the tuple we searched for
 		public void getSupplyRecord(Connection dbconn, int supplierID, int productID) {
 			try {
 				String query="SELECT * FROM yungbluth.SupplyRecord WHERE supplierID = "+supplierID+" AND productID = "+productID;
